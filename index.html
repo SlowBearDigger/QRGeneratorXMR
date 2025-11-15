@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://aistudiocdn.com;
+        style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;
+        font-src 'self' data:;
+        img-src 'self' data: blob: https://docs.getmonero.org https://picsum.photos;
+        connect-src 'self' data: blob:;
+    ">
+<meta name="referrer" content="strict-origin-when-cross-origin" />
+<title>Monero PayQR Generator</title>
+<link rel="stylesheet" href="/index.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+@keyframes text-flicker { 0%, 100% { text-shadow: 0 0 2px #F7B731, 0 0 5px #F7B731, 0 0 10px #F7B731; opacity: 1; } 50% { text-shadow: 0 0 2px #F7B731, 0 0 5px #F7B731; opacity: 0.8; } }
+@keyframes glitch { 0%, 100% { text-shadow: 1px 0 0 red, -1px 0 0 cyan; clip-path: inset(10% 0 80% 0); } 20% { clip-path: inset(90% 0 5% 0); } 40% { clip-path: inset(45% 0 45% 0); } 60% { clip-path: inset(15% 0 75% 0); } 80% { clip-path: inset(70% 0 20% 0); } 100% { clip-path: inset(40% 0 30% 0); } }
+@keyframes blink { 50% { opacity: 0; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+html { height: 100%; }
+body { font-family: 'Roboto Mono', 'SF Mono', Menlo, Monaco, Consolas, 'Courier New', monospace; background-color: #000; cursor: grab; min-height: 100vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+body:active { cursor: grabbing; }
+#root { position: relative; z-index: 1; min-height: 100vh; }
+.form-input { background-color: #0a0a0a; border: 1px solid #374151; color: #f3f4f6; }
+.form-input:focus { outline: none; border-color: #F7B731; box-shadow: 0 0 0 2px rgba(247, 183, 49, 0.5); }
+.btn-glow:hover { transform: translateY(-2px); box-shadow: 0 0 15px -2px #F7B731; }
+.title-glitch { position: relative; animation: text-flicker 3s infinite; }
+.title-glitch::before, .title-glitch::after { content: attr(data-text); position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; }
+.title-glitch::before { left: 2px; text-shadow: -1px 0 red; animation: glitch 2s infinite reverse; }
+.title-glitch::after { left: -2px; text-shadow: -1px 0 cyan; animation: glitch 2.5s infinite reverse; }
+.blinking-cursor { animation: blink 1s step-end infinite; }
+.animate-fade-in { animation: fade-in 0.5s ease-in-out; }
+@media (max-width: 1024px) { body { cursor: default; } }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="module" src="/index.tsx"></script>
+</body>
+</html>
