@@ -3,6 +3,7 @@ https://slowbeardigger.dev/QR/
 This is the source code for the website
 For the peace of mind 
 
+NOW YOU CAN ADD CUSTOM MESSAGE IN QR FOR MONERO AND BITCOIN
 
 Just install node
 Open in Visual Studio Code
