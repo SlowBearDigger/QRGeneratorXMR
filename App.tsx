@@ -10,10 +10,10 @@ import { ConfirmationModal } from './components/ConfirmationModal';
 import type { ShapeType, CornerType, GradientType, Preset, CryptoType } from './types';
 import { MONERO_ORANGE } from './constants';
 
-const cryptoOptions: { id: CryptoType; label: string; placeholder: string; uri: string; regex: RegExp }[] = [
-  { id: 'monero', label: 'Monero (XMR)', placeholder: 'Enter your Monero address', uri: 'monero', regex: /^[48][1-9A-HJ-NP-Za-km-z]{94}$/ },
-  { id: 'bitcoin', label: 'Bitcoin (BTC)', placeholder: 'Enter your Bitcoin address', uri: 'bitcoin', regex: /^(bc1|[13])[a-zA-HJ-NP-Z0-9]{25,39}$/ },
-  { id: 'ethereum', label: 'Ethereum (ETH)', placeholder: 'Enter your Ethereum address', uri: 'ethereum', regex: /^0x[a-fA-F0-9]{40}$/ }
+const cryptoOptions: { id: CryptoType; label: string; placeholder: string; uri: string; regex: RegExp; supportsMessage: boolean; messageParam: string; }[] = [
+  { id: 'monero', label: 'Monero (XMR)', placeholder: 'Enter your Monero address', uri: 'monero', regex: /^[48][1-9A-HJ-NP-Za-km-z]{94}$/, supportsMessage: true, messageParam: 'tx_description' },
+  { id: 'bitcoin', label: 'Bitcoin (BTC)', placeholder: 'Enter your Bitcoin address', uri: 'bitcoin', regex: /^(bc1p|bc1q|[13])[a-zA-HJ-NP-Z0-9]{25,90}$/, supportsMessage: true, messageParam: 'message' },
+  { id: 'ethereum', label: 'Ethereum (ETH)', placeholder: 'Enter your Ethereum address', uri: 'ethereum', regex: /^0x[a-fA-F0-9]{40}$/, supportsMessage: false, messageParam: '' }
 ];
 
 const shapeOptions: ShapeType[] = ['square', 'dots', 'rounded', 'extra-rounded', 'classy', 'classy-rounded'];
@@ -55,6 +55,7 @@ const presets: Preset[] = [
 const App: React.FC = () => {
   const [selectedCrypto, setSelectedCrypto] = useState<CryptoType>('monero');
   const [address, setAddress] = useState<string>('');
+  const [message, setMessage] = useState<string>('');
   const [logo, setLogo] = useState<string | null>(null);
   const [color, setColor] = useState<string>(MONERO_ORANGE);
   const [shape, setShape] = useState<ShapeType>('square');
@@ -81,7 +82,15 @@ const App: React.FC = () => {
   }, []);
 
   const buildQrOptions = useCallback(() => {
-    const qrData = `${currentCryptoInfo?.uri}:${address || 'YOUR_ADDRESS_HERE'}`;
+    const baseUri = `${currentCryptoInfo?.uri}:${address || 'YOUR_ADDRESS_HERE'}`;
+    let qrData = baseUri;
+
+    if (currentCryptoInfo?.supportsMessage && message) {
+      const params = new URLSearchParams();
+      params.append(currentCryptoInfo.messageParam, message);
+      qrData = `${baseUri}?${params.toString()}`;
+    }
+
     const dotsOptions = {
       type: shape as DotType,
       ...(useGradient
@@ -94,7 +103,7 @@ const App: React.FC = () => {
       cornersDotOptions: { type: 'dot' as CornerDotType, color: color }, backgroundOptions: { color: backgroundColor },
       imageOptions: { crossOrigin: 'anonymous', margin: 5, imageSize: 0.4, hideBackgroundDots: true },
     };
-  }, [address, logo, color, shape, cornerType, backgroundColor, useGradient, gradientColor, gradientType, currentCryptoInfo]);
+  }, [address, message, logo, color, shape, cornerType, backgroundColor, useGradient, gradientColor, gradientType, currentCryptoInfo]);
   
   useEffect(() => {
     const options = buildQrOptions();
@@ -180,7 +189,7 @@ const App: React.FC = () => {
       await new Promise(resolve => setTimeout(resolve, 100));
       generateOrUpdateQr();
     }
-  }, [isGenerated, address, generateOrUpdateQr, validateAddress]);
+  }, [isGenerated, address, generateOrUpdateQr]);
 
   const applyPreset = useCallback((preset: Preset) => {
     const { options, randomColors } = preset;
@@ -192,14 +201,17 @@ const App: React.FC = () => {
     if (isGenerated && validateAddress(address)) {
       setTimeout(() => generateOrUpdateQr(), 100);
     }
-  }, [isGenerated, address, generateOrUpdateQr, validateAddress]);
+  }, [isGenerated, address, generateOrUpdateQr]);
 
   const handleDownload = () => {
     if (qrInstance) qrInstance.download({ name: `${selectedCrypto}-payment-qr`, extension: 'png' });
   };
 
   const handleCryptoChange = (crypto: CryptoType) => {
-    setSelectedCrypto(crypto); setAddress(''); setIsGenerated(false);
+    setSelectedCrypto(crypto); 
+    setAddress('');
+    setMessage('');
+    setIsGenerated(false);
     if(qrRef.current) qrRef.current.innerHTML = '';
   }
 
@@ -210,7 +222,9 @@ const App: React.FC = () => {
         <div className="flex-shrink-0"><Header /></div>
         <main className="w-full max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 my-8 flex-grow min-h-0">
           <QrForm
-            address={address} onAddressChange={setAddress} onLogoChange={handleLogoChange}
+            address={address} onAddressChange={setAddress}
+            message={message} onMessageChange={setMessage}
+            onLogoChange={handleLogoChange}
             color={color} onColorChange={setColor} shape={shape} onShapeChange={setShape}
             cornerType={cornerType} onCornerChange={setCornerType} backgroundColor={backgroundColor}
             onBackgroundColorChange={setBackgroundColor} useGradient={useGradient}
@@ -237,6 +251,7 @@ const App: React.FC = () => {
         onClose={handleModalClose}
         onConfirm={handleModalConfirm}
         address={address}
+        message={message}
         cryptoLabel={currentCryptoInfo?.label || 'Crypto'}
       />
     </>
