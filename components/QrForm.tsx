@@ -5,6 +5,7 @@ import { CodeSnippet } from './CodeSnippet';
 
 interface QrFormProps {
   address: string; onAddressChange: (v: string) => void;
+  message: string; onMessageChange: (v: string) => void;
   onLogoChange: (f: File | null) => void;
   color: string; onColorChange: (v: string) => void;
   shape: ShapeType; onShapeChange: (v: ShapeType) => void;
@@ -20,7 +21,7 @@ interface QrFormProps {
   onApplyPreset: (preset: Preset) => void;
   onRandomize: () => void;
   activePreset: string | null;
-  cryptoOptions: { id: CryptoType; label: string; placeholder: string; }[];
+  cryptoOptions: { id: CryptoType; label: string; placeholder: string; supportsMessage: boolean; }[];
   selectedCrypto: CryptoType;
   onCryptoChange: (crypto: CryptoType) => void;
   codeSnippet: string;
@@ -40,7 +41,7 @@ export const QrForm: React.FC<QrFormProps> = (props) => {
   const [openSection, setOpenSection] = useState<number>(1);
   const handleToggle = (index: number) => setOpenSection(openSection === index ? 0 : index);
   const { presets, onApplyPreset, onRandomize, activePreset, cryptoOptions, selectedCrypto, onCryptoChange, codeSnippet, ...rest } = props;
-  const { address, onAddressChange, onLogoChange, color, onColorChange, shape, onShapeChange, cornerType, onCornerChange, backgroundColor, onBackgroundColorChange, useGradient, onUseGradientChange, gradientColor, onGradientColorChange, gradientType, onGradientTypeChange, onGenerateClick, isLoading, isGenerated } = rest;
+  const { address, onAddressChange, message, onMessageChange, onLogoChange, color, onColorChange, shape, onShapeChange, cornerType, onCornerChange, backgroundColor, onBackgroundColorChange, useGradient, onUseGradientChange, gradientColor, onGradientColorChange, gradientType, onGradientTypeChange, onGenerateClick, isLoading, isGenerated } = rest;
   
   const currentCrypto = cryptoOptions.find(c => c.id === selectedCrypto);
 
@@ -67,6 +68,19 @@ export const QrForm: React.FC<QrFormProps> = (props) => {
             </div>
           </div>
           <input type="text" value={address} onChange={(e) => onAddressChange(e.target.value)} className="w-full form-input p-2 rounded-md text-sm" placeholder={currentCrypto?.placeholder} />
+          {currentCrypto?.supportsMessage && (
+            <div>
+              <label htmlFor="message" className="block text-left text-sm font-medium text-gray-300 mb-2">Message / Memo (Optional)</label>
+              <input
+                type="text"
+                id="message"
+                value={message}
+                onChange={(e) => onMessageChange(e.target.value)}
+                className="w-full form-input p-2 rounded-md text-sm"
+                placeholder="e.g., For invoice #123"
+              />
+            </div>
+          )}
         </div>
       </AccordionSection>
       <AccordionSection title="Step 2: Customization" isOpen={openSection === 2} onToggle={() => handleToggle(2)}>

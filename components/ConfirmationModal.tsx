@@ -5,10 +5,11 @@ interface ConfirmationModalProps {
   onClose: () => void;
   onConfirm: () => void;
   address: string;
+  message: string;
   cryptoLabel: string;
 }
 
-export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, onConfirm, address, cryptoLabel }) => {
+export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, onClose, onConfirm, address, message, cryptoLabel }) => {
   const [verificationAddress, setVerificationAddress] = useState('');
 
   useEffect(() => {
@@ -38,6 +39,13 @@ export const ConfirmationModal: React.FC<ConfirmationModalProps> = ({ isOpen, on
           <p className="text-xs text-gray-400 mb-1">Your Entered {cryptoLabel} Address:</p>
           <p className="font-mono text-lg text-white break-all">{renderAddress(address)}</p>
         </div>
+        
+        {message && (
+          <div className="bg-gray-800 p-3 rounded-md border border-gray-600 mb-4">
+            <p className="text-xs text-gray-400 mb-1">Included Message:</p>
+            <p className="font-mono text-md text-gray-200 break-all">{message}</p>
+          </div>
+        )}
 
         <div className="mb-4">
           <label htmlFor="verification" className="block text-sm font-bold text-gray-300 mb-2">Paste the address again to confirm:</label>
