@@ -1,7 +1,13 @@
 export type ShapeType = 'square' | 'dots' | 'rounded' | 'classy' | 'classy-rounded' | 'extra-rounded';
 export type CornerType = 'square' | 'dot' | 'extra-rounded';
 export type GradientType = 'linear' | 'radial';
-export type CryptoType = 'monero' | 'bitcoin' | 'ethereum';
+export type CryptoType = 'custom' | 'monero' | 'bitcoin' | 'ethereum' | 'firo' | 'solana' | 'zcash';
+
+export interface CustomField {
+  id: string;
+  label: string;
+  value: string;
+}
 
 export interface Preset {
   name: string;

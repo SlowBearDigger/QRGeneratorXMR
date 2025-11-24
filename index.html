@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta http-equiv="Content-Security-Policy" content="
         default-src 'self';
-        script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://aistudiocdn.com;
-        style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com;
-        font-src 'self' data:;
+        script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://aistudiocdn.com;
+        style-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://fonts.googleapis.com;
+        font-src 'self' data: https://fonts.gstatic.com;
         img-src 'self' data: blob: https://docs.getmonero.org https://picsum.photos;
         connect-src 'self' data: blob:;
     ">
 <meta name="referrer" content="strict-origin-when-cross-origin" />
 <title>Monero PayQR Generator</title>
-<link rel="stylesheet" href="/index.css">
+<link rel="stylesheet" href="./index.css">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
 @keyframes text-flicker { 0%, 100% { text-shadow: 0 0 2px #F7B731, 0 0 5px #F7B731, 0 0 10px #F7B731; opacity: 1; } 50% { text-shadow: 0 0 2px #F7B731, 0 0 5px #F7B731; opacity: 0.8; } }
@@ -38,6 +38,6 @@ body:active { cursor: grabbing; }
 </head>
 <body>
 <div id="root"></div>
-<script type="module" src="/index.tsx"></script>
+<script type="module" src="./index.tsx"></script>
 </body>
 </html>

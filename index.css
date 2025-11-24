@@ -1,3 +1,89 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@layer base {
+  body {
+    background-color: #000;
+    color: #e5e7eb;
+    font-family: 'Roboto Mono', monospace;
+  }
+}
+
+@layer components {
+  .form-input {
+    @apply bg-[#0a0a0a] border border-gray-700 text-gray-100 transition-all outline-none;
+  }
+  
+  .form-input:focus {
+    @apply border-[#F7B731] ring-1 ring-[#F7B731] shadow-[0_0_10px_rgba(247,183,49,0.3)];
+  }
+
+  .btn-glow {
+    @apply transition-transform duration-200;
+  }
+
+  .btn-glow:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px -2px #F7B731;
+  }
+
+  .title-glitch {
+    position: relative;
+    animation: text-flicker 4s infinite;
+  }
+
+  .title-glitch::before,
+  .title-glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+  }
+
+  .title-glitch::before {
+    left: 2px;
+    text-shadow: -1px 0 red;
+    animation: glitch 2s infinite reverse;
+    clip-path: inset(44% 0 61% 0);
+  }
+
+  .title-glitch::after {
+    left: -2px;
+    text-shadow: -1px 0 cyan;
+    animation: glitch 2.5s infinite reverse;
+    clip-path: inset(50% 0 30% 0);
+  }
+
+  .blinking-cursor {
+    animation: blink 1s step-end infinite;
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-in-out;
+  }
+}
+
+@keyframes text-flicker {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes glitch {
+  0% { clip-path: inset(40% 0 61% 0); }
+  20% { clip-path: inset(92% 0 1% 0); }
+  40% { clip-path: inset(43% 0 1% 0); }
+  60% { clip-path: inset(25% 0 58% 0); }
+  80% { clip-path: inset(54% 0 7% 0); }
+  100% { clip-path: inset(58% 0 43% 0); }
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
